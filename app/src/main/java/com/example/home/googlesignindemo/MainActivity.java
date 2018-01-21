@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private GoogleApiClient googleApiClient;
 
+    public GoogleSignInResult result;
+    public OptionalPendingResult<GoogleSignInResult> opr;
+
 
     ImageView imageView;
     Button button;
@@ -73,10 +76,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onClick(View view) {
 
-                EditTextValue = editText.getText().toString();
+                GoogleSignInAccount account = result.getSignInAccount();
+                String qrValue = account.getEmail();
 
                 try {
-                    bitmap = TextToImageEncode(EditTextValue);
+                    bitmap = TextToImageEncode(qrValue);
 
                     imageView.setImageBitmap(bitmap);
 
@@ -92,9 +96,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     protected void onStart() {
         super.onStart();
 
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+        opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
         if (opr.isDone()){
-            GoogleSignInResult result = opr.get();
+            result = opr.get();
             handleSignInResult(result);
         }else {
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
@@ -163,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     //Metodo para generar CodigoQR
     Bitmap TextToImageEncode(String Value) throws WriterException {
         BitMatrix bitMatrix;
+
         try {
             bitMatrix = new MultiFormatWriter().encode(
                     Value,

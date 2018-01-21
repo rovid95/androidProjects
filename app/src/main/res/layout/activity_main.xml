@@ -14,6 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
+        android:layout_marginTop="29dp"
         android:background="@color/colorPrimaryDark"
         android:contentDescription="@string/user_image"
         android:cropToPadding="false" />
@@ -25,6 +26,7 @@
         android:layout_below="@+id/photoImageView"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
+        android:layout_marginTop="13dp"
         android:text="@string/app_name"
         android:textSize="24sp" />
 
@@ -57,7 +59,6 @@
         android:layout_above="@+id/buttonRevoke"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginBottom="24dp"
         android:onClick="logOut"
         android:text="@string/log_out" />
 
