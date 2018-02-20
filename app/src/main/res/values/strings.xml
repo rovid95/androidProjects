@@ -6,4 +6,7 @@
     <string name="not_close_session">No se pudo cerrar sesion</string>
     <string name="not_revoke">No se pudo quitar permisos</string>
     <string name="user_image">Imagen Usuario</string>
+    <string name="generate_qrCode">Generar Codigo QR</string>
+    <string name="QRDescription">Codigo QR Residente</string>
+    <string name="send_email">Send Email</string>
 </resources>

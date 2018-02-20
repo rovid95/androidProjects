@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\nana2\AndroidStudioProjects\androidProjects\GoogleSignInDemo.iml" filepath="C:\Users\nana2\AndroidStudioProjects\androidProjects\GoogleSignInDemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/androidProjects.iml" filepath="$PROJECT_DIR$/androidProjects.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GoogleSignInDemo.iml" filepath="$PROJECT_DIR$/GoogleSignInDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\nana2\AndroidStudioProjects\androidProjects\app\app.iml" filepath="C:\Users\nana2\AndroidStudioProjects\androidProjects\app\app.iml" />
     </modules>
   </component>
 </project>
