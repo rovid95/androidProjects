@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.home.googlesignindemo.testmail.GMailSender;
+import com.example.home.googlesignindemo.testmail.JSSEProvider;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private TextView emailTextView;
     private TextView idTextView;
 
+    public static EditText mailEditTextView;
+
     private GoogleApiClient googleApiClient;
 
     public GoogleSignInResult result;
@@ -66,9 +71,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     Thread thread ;
     public final static int QRcodeWidth = 500 ;
     Bitmap bitmap, bitmapVisitante ;
-    //QR code visitante
     String randNum;
     Random randomGenerator;
+    GoogleSignInAccount account;
 
     private Context mContext;
 
@@ -80,10 +85,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         photoImageView =  findViewById(R.id.photoImageView);
         nameTextView = findViewById(R.id.nameTextView);
         emailTextView = findViewById(R.id.emailTextView);
         idTextView = findViewById(R.id.idTextView);
+
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -103,8 +111,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                GoogleSignInAccount account = result.getSignInAccount();
+                account = result.getSignInAccount();
                 String qrValue = account.getEmail();
                 randNum = "";
                 randomGenerator = new Random();
@@ -152,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             }
         });
+
     }
 
     private static boolean hasPermissions(Context context, String... permissions) {
@@ -233,28 +241,39 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
-    public void sendEmail (View view){
-        //GoogleSignInAccount account = result.getSignInAccount();
-        String[] correo={"rovid95@gmail.com","example@example.com"};
-        String filename="/qrVisitante.jpg";
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath()+filename;
-        System.out.println(dir);
-        File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),filename);
-        Uri attachment= Uri.fromFile(f);
-        composeEmail(correo,"Codigo QR",dir);
-    }
-    public void composeEmail(String[] addresses, String subject,String filelocation) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setType("*/*"); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse( "file:/"+filelocation));
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
+   public void sendEmail (View view){
+       mailEditTextView = findViewById(R.id.mail_text_edit);
+       System.out.println("Hola" + mailEditTextView.getText().toString());
+
+        if (mailEditTextView.getText().toString() == null) {
+            Toast.makeText(getApplicationContext(), R.string.error_correo, Toast.LENGTH_SHORT).show();
+        }else {
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+
+                        String destinatario = mailEditTextView.getText().toString();
+
+                        GoogleSignInAccount account = result.getSignInAccount();
+                        GMailSender sender = new GMailSender(
+                                "ronald.dsn95@gmail.com",
+                                "Riuzaki95");
+                        sender.addAttachment(Environment.getExternalStorageDirectory().getPath() + "/qrVisitante.jpg");
+                        sender.sendMail("Codigo QR visitante",
+                                account.getGivenName()+" "+account.getFamilyName()+" te envia este Codigo QR",
+                                "ronald.dsn95@gmail.com",
+                                destinatario);
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }).start();
         }
     }
+
+
 //Sirve para el rol del administrador para revocar permisos de la googleApiClient
     public void revoke(View view) {
         Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
@@ -275,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     //Metodo para generar CodigoQR
-    Bitmap TextToImageEncode(String Value) throws WriterException {
+    public Bitmap TextToImageEncode(String Value) throws WriterException {
         BitMatrix bitMatrix;
 
         try {

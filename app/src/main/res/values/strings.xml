@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoogleSignInDemo</string>
+    <string name="app_name">ShowMeQR</string>
     <string name="not_log_in">No se puede iniciar sesion</string>
     <string name="log_out">Log Out</string>
     <string name="revoke">Revoke</string>
@@ -9,4 +9,10 @@
     <string name="generate_qrCode">Generar Codigo QR</string>
     <string name="QRDescription">Codigo QR Residente</string>
     <string name="send_email">Send Email</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="bgImg">backgroundImage</string>
+    <string name="error_correo">Error ingrese correo valido</string>
 </resources>

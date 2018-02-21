@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GoogleSignInDemo.iml" filepath="$PROJECT_DIR$/GoogleSignInDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qrApp.iml" filepath="$PROJECT_DIR$/qrApp.iml" />
     </modules>
   </component>
 </project>

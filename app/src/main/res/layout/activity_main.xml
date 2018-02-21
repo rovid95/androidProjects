@@ -14,49 +14,89 @@
        android:orientation="vertical"
        android:gravity="center"
        >
-       <ImageView
-           android:id="@+id/photoImageView"
-           android:layout_width="56dp"
-           android:layout_height="56dp"
-           android:background="@color/colorPrimaryDark"
-           android:contentDescription="@string/user_image"
-           android:cropToPadding="false" />
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="0dp"
+           android:layout_weight="8"
+           android:orientation="vertical"
+           android:gravity="center">
 
-       <TextView
-           android:id="@+id/nameTextView"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="@string/app_name"
-           android:textSize="24sp" />
+           <ImageView
+               android:id="@+id/photoImageView"
+               android:layout_width="56dp"
+               android:layout_height="56dp"
+               android:background="@color/colorPrimaryDark"
+               android:contentDescription="@string/user_image"
+               android:cropToPadding="false" />
 
-       <TextView
-           android:id="@+id/emailTextView"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="@string/app_name"
-           android:textSize="16sp" />
+           <TextView
+               android:id="@+id/nameTextView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/app_name"
+               android:textSize="24sp" />
 
-       <TextView
-           android:id="@+id/idTextView"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="@string/app_name"
-           android:textSize="16sp" />
+           <TextView
+               android:id="@+id/emailTextView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/app_name"
+               android:textSize="16sp" />
 
-       <Button
-           android:id="@+id/buttonLogOut"
-           style="@style/Widget.AppCompat.Button.Borderless"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:onClick="logOut"
-           android:text="@string/log_out"/>
+           <TextView
+               android:id="@+id/idTextView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/app_name"
+               android:textSize="16sp" />
 
-       <Button
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           style="@style/Widget.AppCompat.Button"
-           android:onClick="sendEmail"
-           android:text="@string/send_email"/>
+           <Button
+               android:id="@+id/buttonLogOut"
+               style="@style/Widget.AppCompat.Button.Borderless"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:onClick="logOut"
+               android:text="@string/log_out"/>
+
+       </LinearLayout>
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="0dp"
+           android:orientation="horizontal"
+           android:layout_weight="2">
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="2"
+               android:text="Correo Visitante"
+               android:autoSizeTextType="uniform"
+               android:textStyle="bold"
+                />
+
+           <EditText
+               android:id="@+id/mail_text_edit"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="6"
+               android:hint="correo@visitante.com"
+               android:inputType="textEmailAddress"/>
+
+           <ImageButton
+               android:id="@+id/sendEmail"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="2"
+               android:onClick="sendEmail"
+               android:scaleType="centerCrop"
+               android:src="@drawable/gmail"
+               style="?android:attr/borderlessButtonStyle"/>
+
+       </LinearLayout>
+
+
 
    </LinearLayout>
 
