@@ -1,104 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.home.googlesignindemo.MainActivity">
 
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_weight="1"
+       android:orientation="vertical"
+       android:gravity="center"
+       >
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="0dp"
+           android:layout_weight="8"
+           android:orientation="vertical"
+           android:gravity="center">
 
-    <ImageView
-        android:id="@+id/photoImageView"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="29dp"
-        android:background="@color/colorPrimaryDark"
-        android:contentDescription="@string/user_image"
-        android:cropToPadding="false" />
+           <ImageView
+               android:id="@+id/photoImageView"
+               android:layout_width="56dp"
+               android:layout_height="56dp"
+               android:background="@color/colorPrimaryDark"
+               android:contentDescription="@string/user_image"
+               android:cropToPadding="false" />
 
-    <TextView
-        android:id="@+id/nameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/photoImageView"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="13dp"
-        android:text="@string/app_name"
-        android:textSize="24sp" />
+           <TextView
+               android:id="@+id/nameTextView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/app_name"
+               android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/emailTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nameTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:text="@string/app_name"
-        android:textSize="16sp" />
+           <TextView
+               android:id="@+id/emailTextView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/app_name"
+               android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/idTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/emailTextView"
-        android:layout_alignStart="@+id/emailTextView"
-        android:layout_below="@+id/emailTextView"
-        android:layout_gravity="center"
-        android:text="@string/app_name"
-        android:textSize="16sp" />
+           <TextView
+               android:id="@+id/idTextView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/app_name"
+               android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/buttonLogOut"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonRevoke"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:onClick="logOut"
-        android:text="@string/log_out" />
+           <Button
+               android:id="@+id/buttonLogOut"
+               style="@style/Widget.AppCompat.Button.Borderless"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:onClick="logOut"
+               android:text="@string/log_out"/>
 
-    <Button
-        android:id="@+id/buttonRevoke"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonLogOut"
-        android:layout_alignStart="@+id/buttonLogOut"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:onClick="revoke"
-        android:text="@string/revoke" />
+       </LinearLayout>
 
-    <EditText
-            android:id="@+id/qrEditText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/buttonRevoke"
-            android:gravity="center"
-            android:hint="Enter Text Here" />
 
-    <Button
-        android:id="@+id/qrButton"
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="0dp"
+           android:orientation="horizontal"
+           android:layout_weight="2">
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="2"
+               android:text="Correo Visitante"
+               android:autoSizeTextType="uniform"
+               android:textStyle="bold"
+                />
+
+           <EditText
+               android:id="@+id/mail_text_edit"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="6"
+               android:hint="correo@visitante.com"
+               android:inputType="textEmailAddress"/>
+
+           <ImageButton
+               android:id="@+id/sendEmail"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="2"
+               android:onClick="sendEmail"
+               android:scaleType="centerCrop"
+               android:src="@drawable/gmail"
+               style="?android:attr/borderlessButtonStyle"/>
+
+       </LinearLayout>
+
+
+
+   </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/qrEditText"
-        android:text="CLICK HERE TO generate qr code" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="top">
+
+        <Button
+            android:id="@+id/qrButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/generate_qrCode" />
 
         <ImageView
             android:id="@+id/qrImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/qrButton"/>
+            android:layout_gravity="center"
+            android:contentDescription="@string/QRDescription"
+            />
 
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

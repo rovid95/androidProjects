@@ -1,10 +1,18 @@
 package com.example.home.googlesignindemo;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.home.googlesignindemo.testmail.GMailSender;
+import com.example.home.googlesignindemo.testmail.JSSEProvider;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -27,12 +37,26 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import org.w3c.dom.Text;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private ImageView photoImageView;
     private TextView nameTextView;
     private TextView emailTextView;
     private TextView idTextView;
+
+    public static EditText mailEditTextView;
 
     private GoogleApiClient googleApiClient;
 
@@ -46,17 +70,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     String EditTextValue ;
     Thread thread ;
     public final static int QRcodeWidth = 500 ;
-    Bitmap bitmap ;
+    Bitmap bitmap, bitmapVisitante ;
+    String randNum;
+    Random randomGenerator;
+    GoogleSignInAccount account;
+
+    private Context mContext;
+
+    private static final int REQUEST = 112;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         photoImageView =  findViewById(R.id.photoImageView);
         nameTextView = findViewById(R.id.nameTextView);
         emailTextView = findViewById(R.id.emailTextView);
         idTextView = findViewById(R.id.idTextView);
+
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -69,27 +104,87 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
         imageView = findViewById(R.id.qrImageView);
-        editText = findViewById(R.id.qrEditText);
+
         button = findViewById(R.id.qrButton);
 
+        //Envia el correo luego de pedir varios permisos que necesita la app
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                GoogleSignInAccount account = result.getSignInAccount();
+                account = result.getSignInAccount();
                 String qrValue = account.getEmail();
+                randNum = "";
+                randomGenerator = new Random();
+                randNum= String.valueOf(randomGenerator.nextInt(100));
 
                 try {
                     bitmap = TextToImageEncode(qrValue);
-
                     imageView.setImageBitmap(bitmap);
 
                 } catch (WriterException e) {
                     e.printStackTrace();
                 }
 
+
+                mContext = MainActivity.this;
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    String[] PERMISSIONS = {android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                    if (!hasPermissions(mContext, PERMISSIONS)) {
+                        ActivityCompat.requestPermissions((Activity) mContext, PERMISSIONS, REQUEST );
+                    } else {
+                        try {
+                            bitmapVisitante = TextToImageEncode(randNum);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            crearQRCodeVisitante(bitmapVisitante);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    try {
+                        bitmapVisitante = TextToImageEncode(randNum);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        crearQRCodeVisitante(bitmapVisitante);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         });
+
+    }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //do here
+                } else {
+                    Toast.makeText(mContext, "The app was not allowed to read your store.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     @Override
@@ -146,6 +241,40 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
+   public void sendEmail (View view){
+       mailEditTextView = findViewById(R.id.mail_text_edit);
+       System.out.println("Hola" + mailEditTextView.getText().toString());
+
+        if (mailEditTextView.getText().toString() == null) {
+            Toast.makeText(getApplicationContext(), R.string.error_correo, Toast.LENGTH_SHORT).show();
+        }else {
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+
+                        String destinatario = mailEditTextView.getText().toString();
+
+                        GoogleSignInAccount account = result.getSignInAccount();
+                        GMailSender sender = new GMailSender(
+                                "ronald.dsn95@gmail.com",
+                                "Riuzaki95");
+                        sender.addAttachment(Environment.getExternalStorageDirectory().getPath() + "/qrVisitante.jpg");
+                        sender.sendMail("Codigo QR visitante",
+                                account.getGivenName()+" "+account.getFamilyName()+" te envia este Codigo QR",
+                                "ronald.dsn95@gmail.com",
+                                destinatario);
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }).start();
+        }
+    }
+
+
+//Sirve para el rol del administrador para revocar permisos de la googleApiClient
     public void revoke(View view) {
         Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
@@ -165,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     //Metodo para generar CodigoQR
-    Bitmap TextToImageEncode(String Value) throws WriterException {
+    public Bitmap TextToImageEncode(String Value) throws WriterException {
         BitMatrix bitMatrix;
 
         try {
@@ -199,4 +328,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
         return bitmap;
     }
+
+
+
+
+
+    public void crearQRCodeVisitante(Bitmap bitmapVisitante) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmapVisitante.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+//you can create a new file name "test.jpg" in sdcard folder.
+        /*DateFormat df = new SimpleDateFormat("dd MM yyyy, HH:mm");
+        String date = df.format(Calendar.getInstance().getTime());
+        date+=".jpg";*/
+        File f = new File(Environment.getExternalStorageDirectory()
+                + File.separator + "qrVisitante.jpg");
+        f.createNewFile();
+//write the bytes in file
+        FileOutputStream fo = new FileOutputStream(f,false);
+        fo.write(bytes.toByteArray());
+
+// remember close de FileOutput
+        fo.close();
+    }
+
 }
